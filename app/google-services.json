@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "345961211873",
+    "project_id": "tu-basura-vale",
+    "storage_bucket": "tu-basura-vale.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345961211873:android:8d81685b7bee70e52e54a0",
+        "android_client_info": {
+          "package_name": "com.example.tu_basura_vale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345961211873-3on3brsprtcctborn0uf5qugth140epl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tu_basura_vale",
+            "certificate_hash": "7e80134605f4774e4cc4548e59da7ca45989e69d"
+          }
+        },
+        {
+          "client_id": "345961211873-h8fjprr9r6c7ga099rlrc01v78qt3q03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD86edUCXbNUSvvB2tEAK5ZcZea5RxWdbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345961211873-h8fjprr9r6c7ga099rlrc01v78qt3q03.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
