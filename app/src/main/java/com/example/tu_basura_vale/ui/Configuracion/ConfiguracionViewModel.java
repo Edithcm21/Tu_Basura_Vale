@@ -1,16 +1,15 @@
-package com.example.tu_basura_vale.ui.home;
+package com.example.tu_basura_vale.ui.Configuracion;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
-
+public class ConfiguracionViewModel extends ViewModel {
     private final MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public ConfiguracionViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("Configuracion fragment");
     }
 
     public LiveData<String> getText() {

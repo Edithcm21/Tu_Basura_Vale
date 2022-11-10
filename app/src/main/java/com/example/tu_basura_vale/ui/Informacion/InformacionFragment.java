@@ -1,4 +1,4 @@
-package com.example.tu_basura_vale.ui.gallery;
+package com.example.tu_basura_vale.ui.Informacion;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,25 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.tu_basura_vale.databinding.FragmentGalleryBinding;
+import com.example.tu_basura_vale.databinding.FragmentInformacionBinding;
 
-public class GalleryFragment extends Fragment {
-
-    private FragmentGalleryBinding binding;
-
+public class InformacionFragment extends Fragment {
+    private FragmentInformacionBinding binding;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
-
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        InformacionViewModel informacionViewModel =
+                new ViewModelProvider(this).get(InformacionViewModel.class);
+        binding = FragmentInformacionBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textInformacion;
+        informacionViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

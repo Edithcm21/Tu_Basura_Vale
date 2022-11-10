@@ -1,16 +1,16 @@
-package com.example.tu_basura_vale.ui.gallery;
+package com.example.tu_basura_vale.ui.Basureros;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class BasurerosViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public BasurerosViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+        mText.setValue("Basureros fragment");
     }
 
     public LiveData<String> getText() {

@@ -126,8 +126,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
                             }
 
                             Toast.makeText (getBaseContext(), "Usuario " + name, Toast.LENGTH_LONG).show ();
-                            Intent activityMain2=new Intent(ActivityMain.this, MainActivity2.class);
-                            startActivity(activityMain2);
+                            Intent mainActivity=new Intent(ActivityMain.this, MainActivity2.class);
+                            startActivity(mainActivity);
                             ActivityMain.this.finish();
 
                         } else {

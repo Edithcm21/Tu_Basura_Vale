@@ -33,7 +33,7 @@ public class LoginFragment extends Fragment {
     private GoogleSignInClient gmsClient;
     private FirebaseAuth auth;
 
-
+/*
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -130,4 +130,7 @@ public class LoginFragment extends Fragment {
                     }
                 });
     }
+
+
+ */
 }

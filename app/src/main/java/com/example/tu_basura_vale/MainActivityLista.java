@@ -31,7 +31,7 @@ public class MainActivityLista extends AppCompatActivity {
     public static final int GOOGLE_SIGNIN_REQUEST_CODE = 1001;
     //Agregar cliente de inicio de sesion de google
     private GoogleSignInClient gmsClient;
-
+/*
     //Variable para gestionar FirebaseAuth
     private FirebaseAuth auth;
 
@@ -125,5 +125,5 @@ public class MainActivityLista extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show ();
                     }
                 });
-    }
+    }*/
 }
