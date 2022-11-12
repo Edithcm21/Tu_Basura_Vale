@@ -44,10 +44,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView (R.layout.activity_main_login);
-            ActionBar actionBar = getSupportActionBar ();
-            if (actionBar != null) {
-                actionBar.setTitle ("Tu Basura Vale !!");
-            }
+            //ActionBar actionBar = getSupportActionBar ();
+            //if (actionBar != null) {
+            //    actionBar.setTitle ("Tu Basura Vale !!");
+           // }
 
             auth = FirebaseAuth.getInstance ();
             EditText edtEmail =findViewById (R.id.etEmailLogin);
