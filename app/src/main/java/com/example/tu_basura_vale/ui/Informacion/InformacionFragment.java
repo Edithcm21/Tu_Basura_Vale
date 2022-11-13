@@ -20,8 +20,8 @@ public class InformacionFragment extends Fragment {
                 new ViewModelProvider(this).get(InformacionViewModel.class);
         binding = FragmentInformacionBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        final TextView textView = binding.textInformacion;
-        informacionViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final TextView textView = binding.textInformacion;
+       // informacionViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
     @Override

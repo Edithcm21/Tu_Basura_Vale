@@ -3,21 +3,16 @@ package com.example.tu_basura_vale;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.tu_basura_vale.fragments.LoginFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
-    public class ActivityMain extends AppCompatActivity {
+    public class ActivityMainLogin extends AppCompatActivity {
 
         public static final String GOOGLE_ID_CLIENT_TOKEN = BuildConfig.GOOGLE_ID_CLIENT_TOKEN;
         public static final int GOOGLE_SIGNIN_REQUEST_CODE = 1001;
@@ -44,10 +39,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView (R.layout.activity_main_login);
-            //ActionBar actionBar = getSupportActionBar ();
-            //if (actionBar != null) {
-            //    actionBar.setTitle ("Tu Basura Vale !!");
-           // }
+//            ActionBar actionBar = getSupportActionBar ();
+//            if (actionBar != null) {
+//                actionBar.setTitle ("Tu Basura Vale !!");
+//            }
 
             auth = FirebaseAuth.getInstance ();
             EditText edtEmail =findViewById (R.id.etEmailLogin);
@@ -126,9 +121,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
                             }
 
                             Toast.makeText (getBaseContext(), "Usuario " + name, Toast.LENGTH_LONG).show ();
-                            Intent mainActivity=new Intent(ActivityMain.this, MainActivity2.class);
+                            Intent mainActivity=new Intent(ActivityMainLogin.this, MainActivity.class);
                             startActivity(mainActivity);
-                            ActivityMain.this.finish();
+                            ActivityMainLogin.this.finish();
 
                         } else {
                             Toast.makeText (getBaseContext(), "Usuario y/o contraseña no reconocida!", Toast.LENGTH_LONG).show ();

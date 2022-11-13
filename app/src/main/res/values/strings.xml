@@ -14,4 +14,11 @@
     <string name="menu_basureros">Loc. Basureros</string>
     <string name="menu_informacion">Informacion</string>
     <string name="menu_configuracion">Configuracion</string>
+    <string name="mensajecanje">selecciona el total de puntos a canjear \n\n ______\n</string>
+    <string name="aceptar">aceptar</string>
+    <string name="imagen_de_codigo_de_barras">imagen de codigo de barras</string>
+    <string name="mensaje_cC">muestra este codigo \n en el centro de canje</string>
+    <string name="Desarrolladores">Desarrolladores\n\nEdith Colorado Morales\nFelix Daniel Martinez Barradas\nEduardo Garcia Lopez\nDamara Elizabeth Herrera Sanchez</string>
+    <string name="google_imagen">Google imagen</string>
+    <string name="todo">TODO</string>
 </resources>

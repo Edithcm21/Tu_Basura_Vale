@@ -13,7 +13,8 @@
         android:theme="@style/Theme.Tu_Basura_Vale"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityMain" android:exported="true"
+
+            android:name=".ActivityMainLogin" android:exported="true"
             android:theme="@style/Theme.Tu_Basura_Vale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,9 +25,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".MainActivity2"
-            android:theme="@style/Theme.Tu_Basura_Vale"
-         ></activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Tu_Basura_Vale.NoActionBar" />
     </application>
 
 </manifest>
