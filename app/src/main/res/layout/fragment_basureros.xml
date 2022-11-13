@@ -26,9 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="44dp"
-        android:background="@color/amarillo"
         android:text="Ubica tus basureros mas \n              cercanos"
-        android:textColor="@color/white"
         android:textSize="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -19,8 +19,8 @@ public class ConfiguracionFragment extends Fragment {
                 new ViewModelProvider(this).get(ConfiguracionViewModel.class);
         binding = FragmentConfiguracionBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        final TextView textView = binding.textConfiguracion;
-        configuracionViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final TextView textView = binding.textConfiguracion;
+        //configuracionViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
     @Override
