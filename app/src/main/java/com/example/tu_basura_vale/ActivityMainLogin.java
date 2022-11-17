@@ -56,8 +56,7 @@ public class ActivityMainLogin extends AppCompatActivity {
 
             // Crear un GoogleSignInClient con las opciones especificadas por gso.
             gmsClient = GoogleSignIn.getClient(this, gso);
-            // Inicializar Firebase Auth
-            auth = FirebaseAuth.getInstance();
+
 
             Button btnSingIn = findViewById(R.id.btn_Google);
             btnSingIn.setOnClickListener(v -> signIn());
@@ -69,7 +68,6 @@ public class ActivityMainLogin extends AppCompatActivity {
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             //Resultado devuelto al iniciar el Intent de GoogleSignInApi.getSignInIntent (...);
-            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
             if (requestCode == GOOGLE_SIGNIN_REQUEST_CODE) {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 if (task.isSuccessful()) {
