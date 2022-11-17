@@ -3,130 +3,141 @@ package com.example.tu_basura_vale;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Objects;
 
-    public class ActivityMainLogin extends AppCompatActivity {
 
-        public static final String GOOGLE_ID_CLIENT_TOKEN = BuildConfig.GOOGLE_ID_CLIENT_TOKEN;
-        public static final int GOOGLE_SIGNIN_REQUEST_CODE = 1001;
+public class ActivityMainLogin extends AppCompatActivity {
+
+        //public static final String GOOGLE_ID_CLIENT_TOKEN = BuildConfig.GOOGLE_ID_CLIENT_TOKEN;
+        public static final int GOOGLE_SIGNIN_REQUEST_CODE = 1;
         //Agregar cliente de inicio de sesion de google
         private GoogleSignInClient gmsClient;
         //Variable para gestionar FirebaseAuth
         private FirebaseAuth auth;
-        private Button btnSingIn;
+        String TAG = "GoogleSignIn";
 
         @SuppressLint("MissingInflatedId")
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView (R.layout.activity_main_login);
-//            ActionBar actionBar = getSupportActionBar ();
-//            if (actionBar != null) {
-//                actionBar.setTitle ("Tu Basura Vale !!");
-//            }
+            setContentView(R.layout.activity_main_login);
 
-            auth = FirebaseAuth.getInstance ();
-            EditText edtEmail =findViewById (R.id.etEmailLogin);
-            EditText edtPassword =findViewById (R.id.etPasswordlLogin);
+            auth = FirebaseAuth.getInstance();
+            EditText edtEmail = findViewById(R.id.etEmailLogin);
+            EditText edtPassword = findViewById(R.id.etPasswordlLogin);
 
-            Button btnLogin =findViewById (R.id.btnLogin);
-            btnLogin.setOnClickListener (v -> {
-                login (edtEmail.getText ().toString (), edtPassword.getText().toString ());
-            });
+            Button btnLogin = findViewById(R.id.btnLogin);
+            btnLogin.setOnClickListener(v -> login(edtEmail.getText().toString(), edtPassword.getText().toString()));
 
-            GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN);
-            builder.requestIdToken(GOOGLE_ID_CLIENT_TOKEN);
-            builder.requestEmail();
-            GoogleSignInOptions gso = builder
-                    .build ();
-            gmsClient = GoogleSignIn.getClient (this, gso);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
 
-            btnSingIn =findViewById (R.id.btn_Google);
-            btnSingIn.setOnClickListener (v -> {
-                showGoogleSignInView ();
-            });
+            // Crear un GoogleSignInClient con las opciones especificadas por gso.
+            gmsClient = GoogleSignIn.getClient(this, gso);
+            // Inicializar Firebase Auth
+            auth = FirebaseAuth.getInstance();
 
-
-
-
+            Button btnSingIn = findViewById(R.id.btn_Google);
+            btnSingIn.setOnClickListener(v -> signIn());
         }
 
 
 
-        private void showGoogleSignInView () {
-            auth = FirebaseAuth.getInstance ();
-
-            Intent intent = gmsClient.getSignInIntent ();
-            myActivityResultLauncher.launch (intent);
-            //startActivityForResult (intent, GOOGLE_SIGNIN_REQUEST_CODE);
-        }
-
-        ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult (
-                new ActivityResultContracts.StartActivityForResult (),
-                result -> {
-                    if (result.getResultCode() == GOOGLE_SIGNIN_REQUEST_CODE) {
-                        // if (result.getData() == null) return;
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent (result.getData ());
-
-                        GoogleSignInAccount account = task.getResult();
-                        if (account != null) firebaseAuthWithGoogleServices (account);
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            //Resultado devuelto al iniciar el Intent de GoogleSignInApi.getSignInIntent (...);
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+            if (requestCode == GOOGLE_SIGNIN_REQUEST_CODE) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (task.isSuccessful()) {
+                    try {
+                        // Google Sign In was successful, authenticate with Firebase
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                        firebaseAuthWithGoogle(account.getIdToken());
+                    } catch (ApiException e) {
+                        // Google Sign In fallido, actualizar GUI
+                        Log.w(TAG, "Google sign in failed", e);
                     }
+                } else {
+                    Log.d(TAG, "Error, login no exitoso:" + Objects.requireNonNull(task.getException()));
+                    Toast.makeText(this, "Ocurrio un error. " + task.getException().toString(), Toast.LENGTH_LONG).show();
                 }
-        );
+            }
+        }
 
 
-        private void firebaseAuthWithGoogleServices (GoogleSignInAccount account) {
-            AuthCredential credential = GoogleAuthProvider.getCredential (account.getIdToken (), null);
-            auth.signInWithCredential (credential)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful ()) {
-                            Toast.makeText (getBaseContext (), "Google SignIn Successful!", Toast.LENGTH_LONG).show ();
+
+
+
+        private void signIn() {
+            Intent signInIntent = gmsClient.getSignInIntent();
+            startActivityForResult(signInIntent, GOOGLE_SIGNIN_REQUEST_CODE);
+        }
+
+
+        private void firebaseAuthWithGoogle(String idToken) {
+            AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+            auth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            Toast.makeText(getBaseContext(), "Usuario Encontrado " , Toast.LENGTH_LONG).show();
+                            Intent mainActivity = new Intent(ActivityMainLogin.this, MainActivity.class);
+                            startActivity(mainActivity);
+                            ActivityMainLogin.this.finish();
                         } else {
-                            Toast.makeText (getBaseContext (),
-                                    "SignIn with Google services failed with exception " +
-                                            (task.getException () != null ? task.getException().getMessage () : "None"),
-                                    Toast.LENGTH_LONG).show ();
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
                         }
                     });
         }
 
-        private void login (String email, String password) {
-            auth.signInWithEmailAndPassword (email, password)
-                    .addOnCompleteListener (task -> {
-                        if (task.isSuccessful ()) {
-                            FirebaseUser user = auth.getCurrentUser ();
+
+
+        private void login(String email, String password) {
+            auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = auth.getCurrentUser();
                             String name = "Encontrado ";
 
                             if (user != null) {
-                                name = user.getDisplayName ();
+                                name = user.getDisplayName();
                             }
 
-                            Toast.makeText (getBaseContext(), "Usuario " + name, Toast.LENGTH_LONG).show ();
-                            Intent mainActivity=new Intent(ActivityMainLogin.this, MainActivity.class);
+                            Toast.makeText(getBaseContext(), "Usuario " + name, Toast.LENGTH_LONG).show();
+                            Intent mainActivity = new Intent(ActivityMainLogin.this, MainActivity.class);
                             startActivity(mainActivity);
                             ActivityMainLogin.this.finish();
 
                         } else {
-                            Toast.makeText (getBaseContext(), "Usuario y/o contraseña no reconocida!", Toast.LENGTH_LONG).show ();
+                            Toast.makeText(getBaseContext(), "Usuario y/o contraseña no reconocida!", Toast.LENGTH_LONG).show();
                         }
                     });
         }
