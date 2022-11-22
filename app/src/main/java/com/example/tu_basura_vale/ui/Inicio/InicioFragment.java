@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.tu_basura_vale.databinding.FragmentInicioBinding;
 
 public class InicioFragment extends Fragment {
@@ -24,7 +23,7 @@ public class InicioFragment extends Fragment {
         binding = FragmentInicioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textInicio;
+        final TextView textView = binding.txtQR;
         inicioViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }

@@ -59,6 +59,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.firebase:firebase-core:latest.release'
     implementation 'com.google.firebase:firebase-auth:latest.release'
+    //BD
+    implementation 'com.google.firebase:firebase-database'
+    //QR
+    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
 
     implementation 'com.google.android.gms:play-services-auth:latest.release'
     implementation 'com.google.code.gson:gson:2.8.6'
