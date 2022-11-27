@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,12 +22,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-//QR
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import android.widget.Toast;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,11 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -59,10 +54,12 @@ public class MainActivity extends AppCompatActivity {
         View hView=navigationView.getHeaderView(0);
         //Referenciamos los TexView a modificar del perfil
 
-         nombreUsuario = (TextView) hView.findViewById(R.id.nombre_usuario);
-         email = (TextView) hView.findViewById(R.id.correo);
-         imagenperfil = (ImageView) hView.findViewById(R.id.img_user);
-        //nombreUsuario.setText("Edith Colorado Morales");
+
+         nombreUsuario = hView.findViewById(R.id.nombre_usuario);
+         email =  hView.findViewById(R.id.correo);
+         imagenperfil = hView.findViewById(R.id.img_user);
+
+        txtQR = findViewById ( R . id . txtQR );
 
         //Instanciamos Firebase y al Usuario que ingresó
         firebaseAuth = FirebaseAuth.getInstance();
@@ -91,27 +88,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //aqui inicia el codigo de escaner
-
-        Button btnQR = findViewById(R.id.btnQR);
-        txtQR=findViewById(R.id.txtQR);
-
-
-        btnQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator integrador=new IntentIntegrator(MainActivity.this);
-                integrador.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                integrador.setPrompt("Lector QR");
-                integrador.setCameraId(0);
-                integrador.setBeepEnabled(true);
-                integrador.setBarcodeImageEnabled(true);
-                integrador.initiateScan();
-
-            }
-        });
-
-     //Aqui termina
     }
 
     private void setUserData(FirebaseUser user) {
@@ -141,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
-
     //complemento del escaner
 
     @Override

@@ -60,11 +60,20 @@ public class ActivityMainLogin extends AppCompatActivity {
 
             Button btnSingIn = findViewById(R.id.btn_Google);
             btnSingIn.setOnClickListener(v -> signIn());
+
+            Button Register=findViewById((R.id.btn_Registro));
+
+            Register.setOnClickListener(v -> registro());
         }
 
+    private void registro() {
+        Intent registro = new Intent(ActivityMainLogin.this, Registro.class);
+        startActivity(registro);
+        ActivityMainLogin.this.finish();
+    }
 
 
-        @Override
+    @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             //Resultado devuelto al iniciar el Intent de GoogleSignInApi.getSignInIntent (...);
@@ -140,6 +149,7 @@ public class ActivityMainLogin extends AppCompatActivity {
                         }
                     });
         }
+
     }
 
 

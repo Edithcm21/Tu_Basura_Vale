@@ -90,6 +90,17 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:iconTint="#DF937E22" />
+    <Button
+
+        android:id="@+id/btn_Registro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:text="No tienes cuenta?,Registrate."
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
 
 
 </LinearLayout>
