@@ -2,9 +2,12 @@ package com.example.tu_basura_vale;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +25,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -31,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView imagenperfil;
     TextView txtQR;
     int totalPuntos=0;
+    FirebaseDatabase database;
+    String id;
+    User UserFB;
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -59,10 +70,15 @@ public class MainActivity extends AppCompatActivity {
          email =  hView.findViewById(R.id.correo);
          imagenperfil = hView.findViewById(R.id.img_user);
 
-        txtQR = findViewById ( R . id . txtQR );
+        txtQR = findViewById (R.id.txtQR);
 
         //Instanciamos Firebase y al Usuario que ingresó
         firebaseAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance ();
+
+
+
+       // txtQR.setText(UserFB.totalpuntos);
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -93,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUserData(FirebaseUser user) {
         nombreUsuario.setText(user.getDisplayName());
         email.setText(user.getEmail());
+        id=user.getUid();
         Glide.with(this).load(user.getPhotoUrl()).into(imagenperfil);
     }
 
@@ -111,12 +128,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        getUsers();
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (firebaseAuthListener != null) {
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
     }
+
+    private void getUsers () {
+
+
+        DatabaseReference ref;
+        ref = FirebaseDatabase.getInstance().getReference();
+        // Agregamos un listener a la referencia
+        ref.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()){
+                    String nombre = dataSnapshot.child("nombre").getValue(String.class);
+                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
+                    int total= dataSnapshot.child("edad").getValue(Integer.class);
+                    //String sexo = dataSnapshot.child("sexo").getValue(String.class);
+                    System.out.println("Entramos aqui **************************************"+nombre+telefono+total);
+                    User user=new User();
+                    user.totalpuntos=total;
+
+
+                    System.out.println(user.totalpuntos+"+++++++++++++++++++++++++++++++");
+                    txtQR.setText(String.valueOf(user.totalpuntos));
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            }
+        });
+    }
+
     //complemento del escaner
 
     @Override

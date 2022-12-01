@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        tools:ignore="MissingConstraints">
+
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="105dp"
+            android:layout_marginTop="-2dp"
+            android:text="Registro de Usuario"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+        <TextView
+            android:id="@+id/tvProfilePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_alignParentStart="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Foto" />
+
+
+        <ImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="127dp"
+            android:layout_height="111dp"
+            android:layout_below="@id/tvTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/perfil" />
+
+        <Button
+            android:id="@+id/btnChangePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:layout_alignTop="@id/ivProfilePic"
+            android:layout_alignParentEnd="true"
+            android:text="Cambiar" />
+
+        <View
+            android:id="@+id/strut"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/ivProfilePic"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/edtName"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Nombre" />
+
+        <EditText
+            android:id="@+id/edtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/strut"
+            android:layout_below="@id/ivProfilePic"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tvlastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvName"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/edtlastName"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Apellidos" />
+
+        <EditText
+            android:id="@+id/edtlastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/strut"
+            android:layout_below="@id/edtName"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvlastName"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/edtAddress"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Dirección" />
+
+        <EditText
+            android:id="@+id/edtAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/strut"
+            android:layout_below="@id/edtlastName"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tvAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvAddress"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/edtAge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Edad" />
+
+        <EditText
+            android:id="@+id/edtAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/strut"
+            android:layout_below="@id/edtAddress"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tvTelephone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvAge"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/edtTelephone"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Teléfono" />
+
+        <EditText
+            android:id="@+id/edtTelephone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/strut"
+            android:layout_below="@id/edtAge"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/tvEmailRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTelephone"
+            android:layout_alignBaseline="@id/etEmailRegister"
+            android:layout_alignEnd="@id/strut"
+            android:layout_marginStart="10dp"
+            android:text="Email"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etEmailRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edtTelephone"
+            android:layout_alignStart="@id/strut"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tvPasswordRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Password"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/tvEmailRegister"
+            android:layout_alignEnd="@id/strut"
+            android:layout_alignBaseline="@id/etPasswordlRegister"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <EditText
+            android:id="@+id/etPasswordlRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:layout_below="@+id/etEmailRegister"
+            android:inputType="textPassword"
+            android:layout_alignStart="@id/strut"
+            android:layout_marginTop="5dp"
+            />
+
+        <Button
+            android:id="@+id/btn_Register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_alignStart="@id/strut"
+            android:text="Registrar"
+            android:layout_below="@id/etPasswordlRegister"/>
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

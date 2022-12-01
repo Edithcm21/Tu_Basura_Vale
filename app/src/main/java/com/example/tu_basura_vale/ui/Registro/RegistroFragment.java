@@ -1,6 +1,6 @@
-package com.example.tu_basura_vale;
+package com.example.tu_basura_vale.ui.Registro;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,18 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.tu_basura_vale.R;
+import com.example.tu_basura_vale.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.network.UpdateMetadataNetworkRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,8 +35,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class Registro extends AppCompatActivity {
-    private FirebaseAuth auth;
+public class RegistroFragment extends Activity {
+    private static final int SELECT_IMAGE_REQUEST_CODE = 2001;
+    private static final String BASE_STORAGE_REFERENCE = "images";
+    private static final String BASE_DATABASE_REFERENCE = "Usuarios";
+
+    private RelativeLayout root;
     private Snackbar snackbar;
     private ImageView ivProfilePic;
     private EditText edtName, edtLastName, edtAge, edtAddress, edtTelephone;
@@ -47,31 +48,20 @@ public class Registro extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseStorage storage;
     private DatabaseReference songs;
-    private RelativeLayout root;
-
-    private static final int SELECT_IMAGE_REQUEST_CODE = 2001;
-    private static final String BASE_STORAGE_REFERENCE = "images";
-    private static final String BASE_DATABASE_REFERENCE = "Usuarios";
-    User user;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro);
+        setContentView (R.layout.fragment_registro);
 
-        auth = FirebaseAuth.getInstance ();
+
         database = FirebaseDatabase.getInstance ();
         storage = FirebaseStorage.getInstance ();
 
         root = findViewById (R.id.root);
-        EditText edtEmail = findViewById (R.id.etEmailRegister);
-        EditText edtPassword = findViewById (R.id.etPasswordlRegister);
+
         Button btnChangePic = findViewById (R.id.btnChangePic);
         btnChangePic.setOnClickListener (view -> selectImage ());
-
-
 
         ivProfilePic = findViewById (R.id.ivProfilePic);
 
@@ -81,61 +71,27 @@ public class Registro extends AppCompatActivity {
         edtAddress = findViewById (R.id.edtAddress);
         edtTelephone = findViewById (R.id.edtTelephone);
 
-        Button btnRegister = findViewById (R.id.btn_Register);
-        btnRegister.setOnClickListener (v -> {
+        Button btnSave = findViewById (R.id.btnSave);
+        btnSave.setOnClickListener (view -> {
             snackbar = Snackbar.make (root, "Guardando...", Snackbar.LENGTH_INDEFINITE);
             ViewGroup layer = (ViewGroup) snackbar.getView ().findViewById (com.google.android.material.R.id.snackbar_text).getParent ();
             ProgressBar bar = new ProgressBar (getBaseContext ());
             layer.addView (bar);
             snackbar.show ();
-            registerUser (edtEmail.getText().toString (), edtPassword.getText().toString ());
+
+            saveInfo ();
         });
     }
 
-
-
-    private void registerUser (String email, String password) {
-        auth.createUserWithEmailAndPassword (email, password)
-                .addOnCompleteListener (task -> {
-                    if (task.isSuccessful ()) {
-                        //Toast.makeText (this, "Register completed!", Toast.LENGTH_LONG).show ();
-                        FirebaseUser userF = auth.getCurrentUser();
-
-                        saveInfo (userF.getUid());
-
-
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(user.nombre+" " + user.apellidos)
-                                .build();
-                        userF.updateProfile(profileUpdates);
-
-                        Intent mainActivity = new Intent(Registro.this, MainActivity.class);
-                        startActivity(mainActivity);
-                        Registro.this.finish();
-                    } else {
-                        if (task.getException () != null) {
-                            Log.e("TYAM", task.getException().getMessage());
-                        }
-
-                       Toast.makeText (this, "Register failed!", Toast.LENGTH_LONG).show ();
-                    }
-                });
-    }
-
-
-    private void saveInfo (String ID) {
+    private void saveInfo () {
         songs = database.getReference (BASE_DATABASE_REFERENCE);
 
-        user       = new User ();
+        User user       = new User ();
         user.nombre     = edtName.getText().toString ();
         user.apellidos  = edtLastName.getText().toString ();
         user.edad       = Integer.parseInt (edtAge.getText().toString ());
         user.direccion  = edtAddress.getText().toString ();
         user.telefono   = edtTelephone.getText().toString ();
-        user.totalpuntos=0;
-        user.id=ID;
-
-
 
         Bitmap bitmap = getBitmapFromDrawable (ivProfilePic.getDrawable ());
         ByteArrayOutputStream bos = new ByteArrayOutputStream ();
@@ -177,8 +133,7 @@ public class Registro extends AppCompatActivity {
     }
 
     private void doSave (User user) {
-        String nodeId = user.id;
-                //calculateStringHash (user.toString ());
+        String nodeId = calculateStringHash (user.toString ());
         HashMap<String, Object> entry = new HashMap<> ();
         entry.put (nodeId, user);
 
@@ -190,7 +145,6 @@ public class Registro extends AppCompatActivity {
                 .addOnFailureListener (e -> Toast.makeText (getBaseContext (),
                         "Error actualizando la BD: " + e.getMessage (),
                         Toast.LENGTH_LONG).show ());
-
     }
 
     private String calculateStringHash (String input) {
@@ -262,4 +216,6 @@ public class Registro extends AppCompatActivity {
 
         super.onActivityResult (requestCode, resultCode, data);
     }
+
 }
+
