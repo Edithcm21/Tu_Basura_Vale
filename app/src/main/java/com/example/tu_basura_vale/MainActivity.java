@@ -191,21 +191,22 @@ public class MainActivity extends AppCompatActivity {
 
         HashMap<String, Object> entry = new HashMap<> ();
 
-        entry.put ("nombre",user.nombre);
-        entry.put ("id","0N8cdPtozUeIQ1PxcHUQ9H1Y6I22");
-        entry.put ("telefono",user.telefono);
-        entry.put ("apellidos",user.apellidos);
-        entry.put ("direccion",user.direccion);
-        entry.put ("edad",user.edad);
-        int total=user.totalpuntos+puntosO;
-        System.out.println("En pasar punrtos a funcion actualizar son   "+user.totalpuntos+"      "+total+"     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
-        entry.put ("totalpuntos",user.totalpuntos+puntosO);
-        entry.put ("foto",user.foto);
+//        entry.put ("nombre",user.nombre);
+//        entry.put ("id","0N8cdPtozUeIQ1PxcHUQ9H1Y6I22");
+//        entry.put ("telefono",user.telefono);
+//        entry.put ("apellidos",user.apellidos);
+//        entry.put ("direccion",user.direccion);
+//        entry.put ("edad",user.edad);
+//        int total=user.totalpuntos+puntosO;
+//        System.out.println("En pasar punrtos a funcion actualizar son   "+user.totalpuntos+"      "+total+"     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//        entry.put ("totalpuntos",user.totalpuntos+puntosO);
+//        entry.put ("foto",user.foto);
+        user.totalpuntos=user.totalpuntos+puntosO;
+        entry.put(user.id,user);
 
 
         songs=FirebaseDatabase.getInstance().getReference();
-        songs.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").updateChildren(entry).addOnSuccessListener(new OnSuccessListener<Void>() {
+        songs.child("Usuarios").updateChildren(entry).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(MainActivity.this,"Se han actualizado correctamente los datos",Toast.LENGTH_LONG).show();
@@ -230,24 +231,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.exists()){
-                    String nombre = dataSnapshot.child("nombre").getValue(String.class);
-                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
-                    String apellidos=dataSnapshot.child("apellidos").getValue(String.class);
-                    String direccion=dataSnapshot.child("direccion").getValue(String.class);
-                    int edad=dataSnapshot.child("edad").getValue(Integer.class);
-                    int puntos= dataSnapshot.child("totalpuntos").getValue(Integer.class);
-                    String foto=dataSnapshot.child("foto").getValue(String.class);
 
-                    System.out.println(nombre+"/////////////////////////////////////////////////////////////////////////////////////////////////");
-                    user.nombre=nombre;
-                    user.id="0N8cdPtozUeIQ1PxcHUQ9H1Y6I22";
-                    user.telefono=telefono;
-                    user.apellidos=apellidos;
-                    user.direccion=direccion;
-                    user.edad=edad;
-                    user.totalpuntos=puntos;
-                    user.foto=foto;
-                    System.out.println("Entramos aqui *******++++++++++++++++++++++++++++++++++++++++++++++++++++*******************************"+user.nombre+user.telefono+user.totalpuntos);
+                    user =dataSnapshot.getValue(User.class);
 
                 }
             }

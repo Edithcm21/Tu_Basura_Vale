@@ -51,10 +51,10 @@ public class InicioFragment extends Fragment {
         InicioViewModel inicioViewModel =
                 new ViewModelProvider(this).get(InicioViewModel.class);
 
+
         binding = FragmentInicioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //database = FirebaseDatabase.getInstance ();
         txtQR = binding.txtQR;
         Button btnQR =binding.btnQR;
         getUsers();
@@ -97,15 +97,7 @@ public class InicioFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.exists()){
-                    String nombre = dataSnapshot.child("nombre").getValue(String.class);
-                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
-                    int total= dataSnapshot.child("totalpuntos").getValue(Integer.class);
-                    //String sexo = dataSnapshot.child("sexo").getValue(String.class);
-                    System.out.println("Entramos aqui **************************************"+nombre+telefono+total);
-
-                    user.totalpuntos=total;
-
-
+                    user =dataSnapshot.getValue(User.class);
                     txtQR.setText(String.valueOf(user.totalpuntos));
                     System.out.println(user.totalpuntos+"+++++++++++++++++++++++++++++++");
                 }
