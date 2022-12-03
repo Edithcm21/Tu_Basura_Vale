@@ -1,6 +1,8 @@
 package com.example.tu_basura_vale;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.tu_basura_vale.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,18 +35,29 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
     TextView nombreUsuario,email;
     ImageView imagenperfil;
     TextView txtQR;
-    int totalPuntos=0;
+
     FirebaseDatabase database;
+    private static final String BASE_DATABASE_REFERENCE = "Usuarios";
+    private DatabaseReference songs;
+
+    int puntos=0;
     String id;
-    User UserFB;
+    User user=new User();
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -74,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Instanciamos Firebase y al Usuario que ingresó
         firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance ();
+        //database = FirebaseDatabase.getInstance ();
+        getUsers();
+
 
 
 
@@ -127,12 +145,12 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getUsers();
-
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        getUsers();
+//
+//    }
 
     @Override
     protected void onStop() {
@@ -142,40 +160,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getUsers () {
 
-
-        DatabaseReference ref;
-        ref = FirebaseDatabase.getInstance().getReference();
-        // Agregamos un listener a la referencia
-        ref.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.exists()){
-                    String nombre = dataSnapshot.child("nombre").getValue(String.class);
-                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
-                    int total= dataSnapshot.child("edad").getValue(Integer.class);
-                    //String sexo = dataSnapshot.child("sexo").getValue(String.class);
-                    System.out.println("Entramos aqui **************************************"+nombre+telefono+total);
-                    User user=new User();
-                    user.totalpuntos=total;
-
-
-                    System.out.println(user.totalpuntos+"+++++++++++++++++++++++++++++++");
-                    txtQR.setText(String.valueOf(user.totalpuntos));
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Fallo la lectura: " + databaseError.getCode());
-            }
-        });
-    }
 
     //complemento del escaner
 
@@ -187,8 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Puntos: " + result.getContents(), Toast.LENGTH_LONG).show();
-                totalPuntos= Integer.parseInt(result.getContents())+totalPuntos;
-                txtQR.setText(String.valueOf(totalPuntos));
+                puntos= Integer.parseInt(result.getContents());
+                Actualizar(puntos);
+
+
+                System.out.println(puntos+" ++++++++++++++++++++++++++++++++++++++++++++  "+txtQR);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -196,5 +184,80 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //aqui termina el complemento.
+
+
+    private void Actualizar(int puntosO) {
+
+
+        HashMap<String, Object> entry = new HashMap<> ();
+
+        entry.put ("nombre",user.nombre);
+        entry.put ("id","0N8cdPtozUeIQ1PxcHUQ9H1Y6I22");
+        entry.put ("telefono",user.telefono);
+        entry.put ("apellidos",user.apellidos);
+        entry.put ("direccion",user.direccion);
+        entry.put ("edad",user.edad);
+        int total=user.totalpuntos+puntosO;
+        System.out.println("En pasar punrtos a funcion actualizar son   "+user.totalpuntos+"      "+total+"     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        entry.put ("totalpuntos",user.totalpuntos+puntosO);
+        entry.put ("foto",user.foto);
+
+
+        songs=FirebaseDatabase.getInstance().getReference();
+        songs.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").updateChildren(entry).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MainActivity.this,"Se han actualizado correctamente los datos",Toast.LENGTH_LONG).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this,"Se ha producido un error al actualizar la BD",Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
+    private void getUsers () {
+        DatabaseReference ref;
+        ref = FirebaseDatabase.getInstance().getReference();
+        // Agregamos un listener a la referencia
+        ref.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()){
+                    String nombre = dataSnapshot.child("nombre").getValue(String.class);
+                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
+                    String apellidos=dataSnapshot.child("apellidos").getValue(String.class);
+                    String direccion=dataSnapshot.child("direccion").getValue(String.class);
+                    int edad=dataSnapshot.child("edad").getValue(Integer.class);
+                    int puntos= dataSnapshot.child("totalpuntos").getValue(Integer.class);
+                    String foto=dataSnapshot.child("foto").getValue(String.class);
+
+                    System.out.println(nombre+"/////////////////////////////////////////////////////////////////////////////////////////////////");
+                    user.nombre=nombre;
+                    user.id="0N8cdPtozUeIQ1PxcHUQ9H1Y6I22";
+                    user.telefono=telefono;
+                    user.apellidos=apellidos;
+                    user.direccion=direccion;
+                    user.edad=edad;
+                    user.totalpuntos=puntos;
+                    user.foto=foto;
+                    System.out.println("Entramos aqui *******++++++++++++++++++++++++++++++++++++++++++++++++++++*******************************"+user.nombre+user.telefono+user.totalpuntos);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            }
+        });
+    }
+
 
 }

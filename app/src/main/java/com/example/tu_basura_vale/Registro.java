@@ -49,6 +49,7 @@ public class Registro extends AppCompatActivity {
     private DatabaseReference songs;
     private RelativeLayout root;
 
+
     private static final int SELECT_IMAGE_REQUEST_CODE = 2001;
     private static final String BASE_STORAGE_REFERENCE = "images";
     private static final String BASE_DATABASE_REFERENCE = "Usuarios";
@@ -106,6 +107,7 @@ public class Registro extends AppCompatActivity {
 
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(user.nombre+" " + user.apellidos)
+                                //.setPhotoUri(dlUrl)
                                 .build();
                         userF.updateProfile(profileUpdates);
 
@@ -153,8 +155,9 @@ public class Registro extends AppCompatActivity {
             Log.e ("Tu Basura Vale", "Error getting bytearray...", ex);
         }
 
-        String fileReferece = String.format (Locale.US, "%s/%s_%s_%d.jpg",
-                BASE_STORAGE_REFERENCE, user.nombre, user.apellidos, System.currentTimeMillis ());
+        //almacena la imagen  en storage
+        String fileReferece = String.format(Locale.US, "%s/%s_%s_%d.jpg",
+                BASE_STORAGE_REFERENCE, user.nombre, user.apellidos, System.currentTimeMillis());
 
         StorageReference images = storage.getReference (fileReferece);
         images.putBytes (data)
@@ -163,7 +166,7 @@ public class Registro extends AppCompatActivity {
                         Task<Uri> dlUrlTask = images.getDownloadUrl ();
 
                         dlUrlTask.addOnCompleteListener (task1 -> {
-                            Uri dlUrl = task1.getResult ();
+                            Uri dlUrl = task1.getResult();
                             if (dlUrl == null) return;
 
                             user.foto = dlUrl.toString ();
@@ -193,26 +196,6 @@ public class Registro extends AppCompatActivity {
 
     }
 
-    private String calculateStringHash (String input) {
-        try {
-            MessageDigest md5 = MessageDigest.getInstance ("MD5");
-            md5.update(input.getBytes());
-            byte[] digest = md5.digest();
-
-            StringBuilder sb = new StringBuilder(digest.length * 2);
-
-            for (byte b : digest) {
-                sb.append(Character.forDigit((b >> 8) & 0xf, 16));
-                sb.append(Character.forDigit(b & 0xf, 16));
-            }
-
-            return sb.toString ();
-        } catch (NoSuchAlgorithmException ex) {
-            Log.e ("TYAM", ex.getMessage ());
-        }
-
-        return null;
-    }
 
     private void selectImage () {
         Intent intent = new Intent (Intent.ACTION_PICK);
