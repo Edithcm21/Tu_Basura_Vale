@@ -144,13 +144,6 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        getUsers();
-//
-//    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -195,8 +188,6 @@ public class MainActivity extends AppCompatActivity {
         ref.child("Usuarios").child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                System.out.println("/////////////////entro al metodo de usuarios pero desde el main activivty ///////");
                 if(dataSnapshot.exists()){
 
                     user =dataSnapshot.getValue(User.class);
@@ -212,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getCodigo (String id) {
-        System.out.println("Entro al metodo del codigo ------------------------------------------");
         //codigo=new Codigo();
         DatabaseReference ref;
         ref = FirebaseDatabase.getInstance().getReference();
@@ -223,11 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(dataSnapshot.exists()){
                         codigo =dataSnapshot.getValue(Codigo.class);
-                        System.out.println(" Valor del codigo QR "+codigo.puntos +" canjee "+codigo.canje+"+////////////////////////////////////////");
-
-
-                    if(codigo.canje)
-                    {
+                    if(codigo.canje) {
                         ActualizarUsuario(codigo.puntos);
                         codigo.canje=false;
                         ActualizarQr();
@@ -237,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     }
-
                 }
 
             @Override
@@ -248,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ActualizarUsuario(int puntosO) {
-        System.out.println("//////////////////////////////////////////////////////////+ entro al metodo de actualizar usuarios" );
 
         HashMap<String, Object> entry = new HashMap<> ();
         user.totalpuntos=user.totalpuntos+puntosO;
@@ -273,10 +257,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ActualizarQr() {
-        System.out.println("//////////////////////////////////////////////////////////+ entro al metodo de actualizar Qr" );
-        HashMap<String, Object> entry = new HashMap<> ();
+         HashMap<String, Object> entry = new HashMap<> ();
         entry.put(codigo.id,codigo);
-
 
         songs=FirebaseDatabase.getInstance().getReference();
         songs.child("Codigo-Valor").updateChildren(entry).addOnSuccessListener(new OnSuccessListener<Void>() {
