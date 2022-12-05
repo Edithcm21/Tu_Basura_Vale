@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String BASE_DATABASE_REFERENCE = "Usuarios";
     private DatabaseReference songs;
 
-    int puntos=0;
     String id;
     User user=new User();
+    Codigo codigo=new Codigo();
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -90,13 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Instanciamos Firebase y al Usuario que ingresó
         firebaseAuth = FirebaseAuth.getInstance();
-        //database = FirebaseDatabase.getInstance ();
-        getUsers();
 
 
 
 
-       // txtQR.setText(UserFB.totalpuntos);
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -122,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
     }
 
     private void setUserData(FirebaseUser user) {
@@ -129,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         email.setText(user.getEmail());
         id=user.getUid();
         Glide.with(this).load(user.getPhotoUrl()).into(imagenperfil);
+        getUsers(id);
     }
 
 
@@ -171,36 +170,87 @@ public class MainActivity extends AppCompatActivity {
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Puntos: " + result.getContents(), Toast.LENGTH_LONG).show();
-                puntos= Integer.parseInt(result.getContents());
-                Actualizar(puntos);
+                //obtiene el id del Qr y mediante el metodo getCodigo obtiene los puntos y verifica que el codigo no haya sido canjeado
+                Toast.makeText(this,"Id del codigo"+result.getContents(),Toast.LENGTH_LONG).show();
+                String Codigo =result.getContents();
+                getCodigo(Codigo);
 
 
-                System.out.println(puntos+" ++++++++++++++++++++++++++++++++++++++++++++  "+txtQR);
-            }
-        } else {
+                }
+
+
+            }else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
+
     //aqui termina el complemento.
 
+    private void getUsers (String id) {
 
-    private void Actualizar(int puntosO) {
+        DatabaseReference ref;
+        ref = FirebaseDatabase.getInstance().getReference();
+        // Agregamos un listener a la referencia
+        ref.child("Usuarios").child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
+                System.out.println("/////////////////entro al metodo de usuarios pero desde el main activivty ///////");
+                if(dataSnapshot.exists()){
+
+                    user =dataSnapshot.getValue(User.class);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void getCodigo (String id) {
+        System.out.println("Entro al metodo del codigo ------------------------------------------");
+        //codigo=new Codigo();
+        DatabaseReference ref;
+        ref = FirebaseDatabase.getInstance().getReference();
+        // Agregamos un listener a la referencia
+        ref.child("Codigo-Valor").child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()){
+                        codigo =dataSnapshot.getValue(Codigo.class);
+                        System.out.println(" Valor del codigo QR "+codigo.puntos +" canjee "+codigo.canje+"+////////////////////////////////////////");
+
+
+                    if(codigo.canje)
+                    {
+                        ActualizarUsuario(codigo.puntos);
+                        codigo.canje=false;
+                        ActualizarQr();
+                    }
+                    else{
+                        Toast.makeText(getBaseContext(), "El codigo ya ha sido utilizado " , Toast.LENGTH_LONG).show();
+                    }
+
+                    }
+
+                }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void ActualizarUsuario(int puntosO) {
+        System.out.println("//////////////////////////////////////////////////////////+ entro al metodo de actualizar usuarios" );
 
         HashMap<String, Object> entry = new HashMap<> ();
-
-//        entry.put ("nombre",user.nombre);
-//        entry.put ("id","0N8cdPtozUeIQ1PxcHUQ9H1Y6I22");
-//        entry.put ("telefono",user.telefono);
-//        entry.put ("apellidos",user.apellidos);
-//        entry.put ("direccion",user.direccion);
-//        entry.put ("edad",user.edad);
-//        int total=user.totalpuntos+puntosO;
-//        System.out.println("En pasar punrtos a funcion actualizar son   "+user.totalpuntos+"      "+total+"     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//        entry.put ("totalpuntos",user.totalpuntos+puntosO);
-//        entry.put ("foto",user.foto);
         user.totalpuntos=user.totalpuntos+puntosO;
         entry.put(user.id,user);
 
@@ -222,27 +272,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void getUsers () {
-        DatabaseReference ref;
-        ref = FirebaseDatabase.getInstance().getReference();
-        // Agregamos un listener a la referencia
-        ref.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").addValueEventListener(new ValueEventListener() {
+    private void ActualizarQr() {
+        System.out.println("//////////////////////////////////////////////////////////+ entro al metodo de actualizar Qr" );
+        HashMap<String, Object> entry = new HashMap<> ();
+        entry.put(codigo.id,codigo);
+
+
+        songs=FirebaseDatabase.getInstance().getReference();
+        songs.child("Codigo-Valor").updateChildren(entry).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MainActivity.this,"Se han actualizado correctamente los datos del codigo",Toast.LENGTH_LONG).show();
 
-                if(dataSnapshot.exists()){
-
-                    user =dataSnapshot.getValue(User.class);
-
-                }
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this,"Se ha producido un error al actualizar la BD",Toast.LENGTH_LONG).show();
             }
         });
+
     }
+
+
+
 
 
 }

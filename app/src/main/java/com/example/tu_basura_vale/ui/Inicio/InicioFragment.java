@@ -22,6 +22,7 @@ import com.example.tu_basura_vale.databinding.FragmentInicioBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,18 +39,18 @@ import java.util.Locale;
 
 public class InicioFragment extends Fragment {
 
-    int totalPuntos=0;
     TextView txtQR;
     private FragmentInicioBinding binding;
     User user=new User();
+    String idUser;
     //Variables para la BD
+    FirebaseAuth firebaseAuth;
     private static final String BASE_DATABASE_REFERENCE="Usuarios";
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        InicioViewModel inicioViewModel =
-                new ViewModelProvider(this).get(InicioViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        InicioViewModel inicioViewModel = new ViewModelProvider(this).get(InicioViewModel.class);
 
 
         binding = FragmentInicioBinding.inflate(inflater, container, false);
@@ -57,7 +58,7 @@ public class InicioFragment extends Fragment {
 
         txtQR = binding.txtQR;
         Button btnQR =binding.btnQR;
-        getUsers();
+
 
         //aqui inicia el codigo de escaner
 
@@ -74,6 +75,13 @@ public class InicioFragment extends Fragment {
         });
 
         //Aqui termina
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        idUser=user.getUid();
+        System.out.println(idUser+"///////////////***********//////////*******///////****////*****////");
+        getUsers();
 
         inicioViewModel.getText().observe(getViewLifecycleOwner(), text -> txtQR.setText(text));
         return root;
@@ -92,7 +100,7 @@ public class InicioFragment extends Fragment {
         DatabaseReference ref;
         ref = FirebaseDatabase.getInstance().getReference();
         // Agregamos un listener a la referencia
-        ref.child("Usuarios").child("0N8cdPtozUeIQ1PxcHUQ9H1Y6I22").addValueEventListener(new ValueEventListener() {
+        ref.child("Usuarios").child(idUser).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
