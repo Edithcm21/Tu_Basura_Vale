@@ -18,11 +18,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -35,6 +47,15 @@ public class ActivityMainLogin extends AppCompatActivity {
         //Variable para gestionar FirebaseAuth
         private FirebaseAuth auth;
         String TAG = "GoogleSignIn";
+        User userG=new User();
+    private Snackbar snackbar;
+
+    private FirebaseDatabase database;
+    private FirebaseStorage storage;
+    private DatabaseReference songs;
+
+    private static final String BASE_STORAGE_REFERENCE = "images";
+    private static final String BASE_DATABASE_REFERENCE = "Usuarios";
 
         @SuppressLint("MissingInflatedId")
         @Override
@@ -43,6 +64,7 @@ public class ActivityMainLogin extends AppCompatActivity {
             setContentView(R.layout.activity_main_login);
 
             auth = FirebaseAuth.getInstance();
+            database = FirebaseDatabase.getInstance ();
             EditText edtEmail = findViewById(R.id.etEmailLogin);
             EditText edtPassword = findViewById(R.id.etPasswordlLogin);
 
@@ -115,6 +137,15 @@ public class ActivityMainLogin extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(getBaseContext(), "Usuario Encontrado " , Toast.LENGTH_LONG).show();
+
+                            FirebaseUser user = auth.getCurrentUser();
+                            String id_usuario=user.getUid();
+                            userG.totalpuntos=0;
+                            userG.id=id_usuario;
+                            userG.nombre=user.getDisplayName();
+                            userG.telefono=user.getPhoneNumber();
+                            userG.foto= String.valueOf(user.getPhotoUrl());
+                            getUsers(userG);
                             Intent mainActivity = new Intent(ActivityMainLogin.this, MainActivity.class);
                             startActivity(mainActivity);
                             ActivityMainLogin.this.finish();
@@ -124,6 +155,48 @@ public class ActivityMainLogin extends AppCompatActivity {
                         }
                     });
         }
+
+    private void doSaveUsers (User user) {
+        String nodeId = user.id;
+        HashMap<String, Object> entry = new HashMap<> ();
+        entry.put (nodeId, user);
+
+        songs = database.getReference (BASE_DATABASE_REFERENCE);
+        songs.updateChildren (entry)
+                .addOnSuccessListener (aVoid -> {
+                    Toast.makeText(getBaseContext(),"Datos almacenado en la BD",Toast.LENGTH_LONG).show();
+                })
+                .addOnFailureListener (e -> Toast.makeText (getBaseContext (),
+                        "Error actualizando la BD: " + e.getMessage (),
+                        Toast.LENGTH_LONG).show ());
+
+    }
+
+    private void getUsers (User User) {
+        DatabaseReference ref;
+        ref = FirebaseDatabase.getInstance().getReference();
+        // Agregamos un listener a la referencia
+        ref.child("Usuarios").child(User.id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()){
+                    System.out.println("El usuario ya existe en la Bd de firebase+++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+                }
+                else {
+                    System.out.println("Entro aqui ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+                    doSaveUsers(User);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Fallo la lectura: " + databaseError.getCode());
+            }
+        });
+    }
+
 
 
 

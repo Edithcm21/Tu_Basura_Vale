@@ -57,12 +57,11 @@ public class InicioFragment extends Fragment {
         View root = binding.getRoot();
 
         txtQR = binding.txtQR;
-        Button btnQR =binding.btnQR;
 
 
         //aqui inicia el codigo de escaner
 
-        btnQR.setOnClickListener(v -> {
+        binding.fab.setOnClickListener(v -> {
             IntentIntegrator integrador=new IntentIntegrator(getActivity());
             integrador.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
             integrador.setPrompt("Lector QR");
@@ -73,6 +72,7 @@ public class InicioFragment extends Fragment {
 
 
         });
+        //btnQR.setOnClickListener();
 
         //Aqui termina
 
@@ -82,6 +82,8 @@ public class InicioFragment extends Fragment {
         idUser=user.getUid();
         System.out.println(idUser+"///////////////***********//////////*******///////****////*****////");
         getUsers();
+
+
 
         inicioViewModel.getText().observe(getViewLifecycleOwner(), text -> txtQR.setText(text));
         return root;
