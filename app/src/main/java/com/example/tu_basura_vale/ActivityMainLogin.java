@@ -186,6 +186,7 @@ public class ActivityMainLogin extends AppCompatActivity {
                 else {
                     System.out.println("Entro aqui ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
+                    //Si el usuario no existe en la BD guarda los datos
                     doSaveUsers(User);
                 }
             }

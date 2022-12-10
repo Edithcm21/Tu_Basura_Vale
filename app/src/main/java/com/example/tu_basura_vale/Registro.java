@@ -44,6 +44,7 @@ public class Registro extends AppCompatActivity {
     private ImageView ivProfilePic;
     private EditText edtName, edtLastName, edtAge, edtAddress, edtTelephone;
 
+    Uri dlUrl;
     private FirebaseDatabase database;
     private FirebaseStorage storage;
     private DatabaseReference songs;
@@ -99,15 +100,15 @@ public class Registro extends AppCompatActivity {
         auth.createUserWithEmailAndPassword (email, password)
                 .addOnCompleteListener (task -> {
                     if (task.isSuccessful ()) {
-                        //Toast.makeText (this, "Register completed!", Toast.LENGTH_LONG).show ();
+                        Toast.makeText (this, "Register completed!", Toast.LENGTH_LONG).show ();
                         FirebaseUser userF = auth.getCurrentUser();
 
+                        assert userF != null;
                         saveInfo (userF.getUid());
 
 
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(user.nombre+" " + user.apellidos)
-                                //.setPhotoUri(dlUrl)
                                 .build();
                         userF.updateProfile(profileUpdates);
 
@@ -166,7 +167,7 @@ public class Registro extends AppCompatActivity {
                         Task<Uri> dlUrlTask = images.getDownloadUrl ();
 
                         dlUrlTask.addOnCompleteListener (task1 -> {
-                            Uri dlUrl = task1.getResult();
+                            dlUrl = task1.getResult();
                             if (dlUrl == null) return;
 
                             user.foto = dlUrl.toString ();

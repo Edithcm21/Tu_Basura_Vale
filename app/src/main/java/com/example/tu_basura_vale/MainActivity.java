@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView imagenperfil;
     TextView txtQR;
 
+    Canje canje;
     FirebaseDatabase database;
     private static final String BASE_DATABASE_REFERENCE = "Usuarios";
     private DatabaseReference songs;
