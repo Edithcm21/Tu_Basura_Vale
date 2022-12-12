@@ -124,6 +124,7 @@ public class ActivityMainLogin extends AppCompatActivity {
 
 
         private void signIn() {
+            auth=FirebaseAuth.getInstance();
             Intent signInIntent = gmsClient.getSignInIntent();
             startActivityForResult(signInIntent, GOOGLE_SIGNIN_REQUEST_CODE);
         }
